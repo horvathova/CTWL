@@ -4,7 +4,6 @@
 
 #define RANGE 10
 #define RAND_MIN 57
-#define EMPTY_LIST 0
 
 typedef struct TWN{
 	float data;
@@ -17,16 +16,16 @@ typedef struct CTWL{
 }CTWL;
 
 void ctwl_cur_step_right(CTWL *list){
-	if(list==NULL){
-		return EMPTY_LIST;
+	if(list->cur==NULL){
+		return NULL;
 	}
 	
     list->cur=list->cur->next;
 }
 
 void ctwl_cur_step_left(CTWL *list){
-	if(list==NULL){
-		return EMPTY_LIST;
+	if(list->cur==NULL){
+		return NULL;
 	}
 	
 	list->cur=list->cur->prev;
@@ -35,9 +34,13 @@ void ctwl_cur_step_left(CTWL *list){
 TWN *ctwl_insert_right(CTWL* list, float val){
 	TWN *novy, *prvy, *druhy;
 	
+	if(list->cur==NULL){
+		return NULL;
+	}
+	
 	novy=malloc(sizeof(TWN));
 	if(novy==NULL){
-		return EMPTY_LIST;
+		return 0;
 	}
 	
 	prvy= list->cur;
@@ -55,9 +58,13 @@ TWN *ctwl_insert_right(CTWL* list, float val){
 TWN *ctwl_insert_left(CTWL* list, float val){
 	TWN *novy, *prvy, *druhy;
 	
+	if(list->cur==NULL){
+		return printf("EMPTY LIST");
+	}
+	
 	novy=malloc(sizeof(TWN));
 	if(novy==NULL){
-		return EMPTY_LIST;
+		return 0;
 	}
 	
 	druhy= list->cur;
@@ -75,6 +82,10 @@ TWN *ctwl_insert_left(CTWL* list, float val){
 char ctwl_delete(CTWL *list){
 	TWN *cur, *prev, *next;
 	
+	if(list->cur==NULL){
+		return printf("EMPTY LIST");
+	}
+	
 	cur=list->cur;
 	next=list->cur->next;
 	prev=list->cur->prev;
@@ -87,14 +98,15 @@ char ctwl_delete(CTWL *list){
 
 CTWL *ctwl_create_empty(void){
 	CTWL *list;
-
-	if((list=(CTWL*)malloc(sizeof(CTWL)))==NULL){
-		return NULL;
+	
+	if(list->cur==NULL){
+		return printf("EMPTY LIST");
 	}
 	
-	list->cur=(TWN*)malloc(sizeof(TWN));
-	list->cur->next=NULL;
-	list->cur->prev=NULL;
+	if((list=(CTWL*)malloc(sizeof(CTWL)))==NULL){
+		list->cur=NULL;
+		return NULL;
+	}
 
 	return list;
 }
@@ -104,6 +116,10 @@ CTWL *ctwl_create_random(unsigned int size){
 	TWN *start, *prev, *next;
 	int i;
 
+	if(list->cur==NULL){
+		return printf("EMPTY LIST");
+	}
+	
 	list=ctwl_create_empty();
 	list->cur->data=RANGE*(float)rand()/((float)RAND_MAX)+RAND_MIN;
 	start=list->cur;
@@ -131,6 +147,10 @@ CTWL *ctwl_create_random(unsigned int size){
 void ctwl_destroy(CTWL *list){
 	TWN *cur;
 	
+	if(list->cur==NULL){
+		return printf("EMPTY LIST");
+	}
+	
 	cur=list->cur;
 	while(list->cur->next==NULL){
 		ctwl_cur_step_right(list);
@@ -145,8 +165,8 @@ void ctwl_destroy(CTWL *list){
 void ctwl_print(CTWL *list){
 	TWN *cur;
 	
-	if(list==NULL){
-		printf("EMPTY LIST");
+	if(list->cur==NULL){
+		return printf("EMPTY LIST");
 	}
 	
 	cur=list->cur;
@@ -162,6 +182,10 @@ void ctwl_print(CTWL *list){
 float ctwl_sum_values(CTWL *list){
 	TWN *cur;
 	float sum;
+	
+	if(list->cur==NULL){
+		return printf("EMPTY LIST");
+	}
 	
 	sum=0;
 	cur=list->cur;
