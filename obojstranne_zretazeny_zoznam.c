@@ -107,7 +107,10 @@ CTWL *ctwl_create_empty(void){
 		list->cur=NULL;
 		return NULL;
 	}
-
+        
+	list->cur=NULL;
+	list->cur->next=NULL;
+	
 	return list;
 }
 
