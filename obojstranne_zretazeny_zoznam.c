@@ -2,6 +2,8 @@
 #include <stdlib.h>
 #include <time.h>
 
+#define OK 1
+#define FAIL 0
 #define RANGE 10
 #define RAND_MIN 57
 
@@ -83,17 +85,28 @@ char ctwl_delete(CTWL *list){
 	TWN *cur, *prev, *next;
 	
 	if(list->cur==NULL){
-		break;
+		return FAIL;
 	}
+	
+	if(list->cur->next == list->cur && list->cur->prev == list->cur){ 
+		free(list->cur->next);
+		free(list->cur->prev);
+		list->cur = NULL;
+		return OK;
+}
 	
 	cur=list->cur;
 	next=list->cur->next;
 	prev=list->cur->prev;
 	
-	prev->next=next;
-	next->prev=prev;
+	ctwl_cur_step_right(list);
+	list->cur->prev = prev;
+	ctwl_cur_step_left(list);
+	list->cur->next = next;
+	ctwl_cur_step_right(list);
 	
 	free(cur);
+	return OK;
 }
 
 CTWL *ctwl_create_empty(void){
@@ -104,7 +117,6 @@ CTWL *ctwl_create_empty(void){
 	}
 	
 	if((list=(CTWL*)malloc(sizeof(CTWL)))==NULL){
-		list->cur=NULL;
 		return NULL;
 	}
         
@@ -157,12 +169,18 @@ void ctwl_destroy(CTWL *list){
 	cur=list->cur;
 	while(list->cur->next==NULL){
 		ctwl_cur_step_right(list);
+		if(list->cur != prvy){
+			free(cur);
+		}
+		
+		else{
+			break
+		}
+			
 		free(cur);
-		list->cur=cur;	
 	}
-	
+
 	free(list);
-	free(list->cur);
 }
 
 void ctwl_print(CTWL *list){
