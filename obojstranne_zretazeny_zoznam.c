@@ -103,8 +103,7 @@ char ctwl_delete(CTWL *list) {
 
     // TODO problem !
 	if (list->cur->next == list->cur && list->cur->prev == list->cur) {
-		free(list->cur->next);
-		free(list->cur->prev);
+		free(list->cur);
 		list->cur = NULL;
 		return OK;
 	}
@@ -149,35 +148,27 @@ CTWL *ctwl_create_random(unsigned int size) {
 }
 
 void ctwl_destroy(CTWL *list) {
-	TWN *cur;
+	TWN *cur, *dalsi;
 
     // TODO: prazdny zoznam nie je neexistujuci zoznam
     //       aj prazdny zoznam sa da zrusit
     //       a nielen, ze da, ale aj ho zrusit treba
 	if (list->cur == NULL) {
+		free(list);
 		return;
 	}
 
     // TODO: ak zoznam nie je prazdny, tento cyklus ani len nezacne bezat
     //       a teda, uzly sa z pamete nevypratavaju, iba sa skoci na riadok
     //       ...
-	cur = list->cur;
-	while (list->cur->next == NULL) {
-		ctwl_cur_step_right(list);
-		if (list->cur != cur) {
-			free(cur);
-		}
-
-		else {
-			return;
-		}
-
-		free(cur);
+	while (list->cur->next != list->cur) {
+		dalsi = list->cur->next;
+		ctwl_delete(list);
+		list->cur = dalsi;
 	}
-
     // ... na tento riadok a zrusi sa jedine pojitko, ktore nas so zoznamom
     //     spaja
-	free(list);
+	free(list->cur);
 }
 
 void ctwl_print(CTWL *list) {
